@@ -15,6 +15,17 @@ El desarrollo sigue una arquitectura estructurada de carpetas dentro del directo
 * **Engine:** Godot Engine 4.x (Renderizador: *Compatibility* para portabilidad web)
 * **Lenguaje:** GDScript 2.0 (Tipado estricto)
 * **Versionamiento:** Git / GitHub para control de configuraciones
+## 🎨 Personalización del Proyecto.
+
+El nombre, la descripción y el ícono del proyecto se configuraron desde el panel interno de Godot Engine, siguiendo la ruta:
+
+**Project > Project Settings > Application > Config**
+
+Dentro de esa sección se editaron los siguientes campos:
+
+* **Name:** Nombre visible del proyecto.
+* **Description:** Breve descripción del propósito del sistema interactivo.
+* **Icon:** Imagen personalizada (ubicada en `src/assets/ui/`)
 
 ## 👨‍💻 Autor
 * **Nombre:** [Jorge Eliecer Montes Rodriguez]

@@ -11,9 +11,10 @@ config_version=5
 [application]
 
 config/name="Mi_proyecto_interactivo"
+config/description="Proyecto de primera clase Universidad Antonio Nariño"
 run/main_scene="uid://fg7rg8t0effk"
 config/features=PackedStringArray("4.7", "GL Compatibility")
-config/icon="res://src/assets/ui/icon.svg"
+config/icon="uid://dakjslfikh14y"
 
 [display]
 

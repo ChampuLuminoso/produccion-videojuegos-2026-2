@@ -9,11 +9,6 @@ func cambiar_de_escena_nivel() -> void:
 func cambiar_de_escena_menu() -> void:
 	get_tree().change_scene_to_file("res://src/scenes/main.tscn")
 
-
-func _on_btn_simular_pressed() -> void:
-	pass # Replace with function body.
-
-
 func _on_btn_simular_pressed_navigation() -> void:
 	cambiar_de_escena_nivel()
 
@@ -21,5 +16,5 @@ func _on_btn_simular_pressed_navigation() -> void:
 
 
 func _on_btn_volver_pressed_navigation() -> void:
-	cambiar_de_escena_nivel()
+	cambiar_de_escena_menu()
 	pass # Replace with function body.

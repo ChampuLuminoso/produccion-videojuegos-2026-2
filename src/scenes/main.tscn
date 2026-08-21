@@ -37,4 +37,3 @@ text = "Estado del Sistema: Listo."
 script = ExtResource("2_32aa5")
 
 [connection signal="pressed" from="VBoxMenu/BtnSimular" to="SceneChanger" method="_on_btn_simular_pressed_navigation"]
-[connection signal="pressed" from="VBoxMenu/BtnSalir" to="SceneChanger" method="_on_btn_volver_pressed_navigation"]
