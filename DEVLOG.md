@@ -33,3 +33,52 @@ dentro de la carpeta `src/`.
 ### Próximos pasos
 - Refactorizar la navegación para centralizarla completamente en `SceneChanger`.
 - Preparar la grabación del video de sustentación.
+
+## [2026-09-02] - Refactorización a Event Bus y navegación desacoplada
+
+**Autor:** Jorge Eliecer Montes Rodriguez
+
+### Resumen
+Se refactorizó por completo la arquitectura plana del Laboratorio 1 hacia
+un modelo modular con co-localización de escenas y scripts. Se eliminó la
+dependencia directa a `get_tree().change_scene_to_file()` y se reemplazó
+por un `EventBus` global (Autoload) que centraliza la comunicación entre
+pantallas mediante el patrón Observer.
+
+### Cambios realizados
+- Creación de `src/core/event_bus.gd` registrado como Autoload `EventBus`,
+  con las señales tipadas `navigation_requested` y `parameter_changed`.
+- Creación de `src/core/main_app.gd` / `main_app.tscn` como orquestador
+  central: se suscribe al bus, libera con `queue_free()` la escena previa
+  y limpia la referencia (`current_scene = null`) antes de instanciar la
+  siguiente, previniendo fugas de memoria.
+- Reubicación y renombramiento de `main.tscn`/`main.gd` a
+  `src/scenes/menu/menu_panel.tscn` / `.gd`, ahora con botones adicionales
+  de Configuración y Créditos.
+- Reubicación de `main_level_1.tscn`/`main_level_1.gd` a
+  `src/scenes/simulation/step_1_base.tscn` / `.gd`.
+- Creación de dos paneles nuevos: `src/scenes/config/config_panel.tscn` y
+  `src/scenes/credits/credits_panel.tscn`, ambos co-localizados con su
+  script y navegando exclusivamente vía `EventBus`.
+- Eliminación del script huérfano `change_scene.gd` y de la carpeta vacía
+  `src/scripts/`.
+- Actualización de `project.godot`: nombre del proyecto a "Laboratorio 2",
+  escena principal `src/core/main_app.tscn` y registro del Autoload.
+- Redacción del ADR `doc/adr/0001-uso-de-event-bus.md` justificando la
+  decisión arquitectónica.
+
+### Problemas encontrados y solución
+- Al desacoplar la navegación, inicialmente cada panel intentaba cargar
+  directamente la siguiente escena, replicando el problema del Lab 1. Se
+  corrigió delegando esa responsabilidad exclusivamente a `MainApp`,
+  manteniendo a los paneles ciegos entre sí.
+- Fue necesario decidir cómo tipar la señal `parameter_changed` dado que
+  el valor puede ser de distinta naturaleza según el parámetro; se usó
+  `Variant` de forma explícita para mantener tipado estricto sin perder
+  flexibilidad.
+
+### Próximos pasos
+- Persistir el estado de selección de ingredientes entre paneles usando
+  un recurso o Autoload de estado compartido.
+- Añadir transiciones visuales (fade/tween) al cambiar de escena en
+  `MainApp`.
