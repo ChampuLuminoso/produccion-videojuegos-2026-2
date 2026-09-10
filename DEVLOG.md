@@ -82,3 +82,13 @@ pantallas mediante el patrón Observer.
   un recurso o Autoload de estado compartido.
 - Añadir transiciones visuales (fade/tween) al cambiar de escena en
   `MainApp`.
+
+## Actividad 3 – Arquitectura Profesional
+
+| Campo | Detalle |
+|---|---|
+| Fecha | 10/09/2026 |
+| Funcionalidades implementadas | No se agregaron funcionalidades nuevas (el alcance del Lab 3 es reorganizar, no extender). Se extrajo el componente reutilizable `src/components/back_button/`, encapsulando el patrón de navegación de retorno (`@export var target_scene_path` + emisión de `navigation_requested`) que antes estaba duplicado en `config_panel.gd`, `credits_panel.gd` y `step_1_base.gd`. Se crearon `CHANGELOG.md` y `docs/adr/adr_001_escenas.md`. |
+| Dificultades encontradas | Detectar cuál lógica duplicada valía la pena extraer sin sobre-diseñar: se evaluó también extraer el patrón de selección con `.bind()` de los botones de ingrediente, pero se decidió no hacerlo porque cada callback tiene una firma y efecto distintos — no era duplicación real, solo un patrón similar. Solo se refactorizó lo que era código idéntico en más de un archivo. |
+| Decisiones de diseño | Se organizó la carpeta `src/components/` (hasta ahora vacía desde el Lab 1) alrededor del principio de responsabilidad única: un componente reutilizable debe resolver un solo problema (en este caso, "volver a una escena fija") y configurarse por `@export` en vez de código repetido. Se documentó la justificación completa en `docs/adr/adr_001_escenas.md`. |
+| Próximos pasos | Evaluar extraer un segundo componente reutilizable si aparece otro patrón duplicado (por ejemplo, un `OptionButtonGroup` genérico para grupos de selección con `.bind()`). Añadir captura de pantalla real al README. Continuar con la persistencia de estado entre escenas pendiente desde el Lab 2. |
