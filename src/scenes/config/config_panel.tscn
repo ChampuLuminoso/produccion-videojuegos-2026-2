@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://src/scenes/config/config_panel.gd" id="1"]
+[ext_resource type="PackedScene" path="res://src/components/back_button/back_button.tscn" id="2"]
 
 [node name="ConfigPanel" type="Control"]
 layout_mode = 3
@@ -30,6 +31,6 @@ layout_mode = 2
 text = "Panel de Configuración de Parámetros"
 horizontal_alignment = 1
 
-[node name="BtnVolver" type="Button" parent="VBoxConfig"]
+[node name="BtnVolver" parent="VBoxConfig" instance=ExtResource("2")]
 layout_mode = 2
-text = "Volver al Menú"
+target_scene_path = "res://src/scenes/menu/menu_panel.tscn"
