@@ -19,6 +19,7 @@ config/icon="uid://dakjslfikh14y"
 [autoload]
 
 EventBus="*res://src/core/event_bus.gd"
+GlobalManager="*res://src/core/global_manager.gd"
 
 [display]
 

@@ -3,7 +3,7 @@
 **Facultad de Ingeniería de Sistemas y Computación**  
 
 ## 🏷️ Nombre del Proyecto
-Sistema Interactivo Multi-Etapa — Proyecto Integrador (Laboratorios 1, 2 y 3)
+Sistema Interactivo Multi-Etapa — Proyecto Integrador (Laboratorios 1 a 4, Sprint 1)
 
 ## 📝 Descripción del Proyecto
 Este repositorio aloja la línea base del proyecto integrador interactivo desarrollado durante el semestre académico 2026-2. Consiste en un sistema interactivo multi-etapa configurado bajo buenas prácticas de ingeniería de software en Godot Engine.
@@ -14,47 +14,64 @@ Construir, de forma incremental a lo largo del semestre, un sistema interactivo 
 ## 📸 Captura de Pantalla del Estado Actual
 > _Agrega aquí una captura del menú principal en ejecución (`F5` en Godot,
 > luego `Alt+PrintScreen` o la herramienta de captura de tu sistema) y
-> guárdala como `docs/screenshots/estado_actual.png`. Luego inserta:_
-> `![Estado actual del proyecto](docs/screenshots/estado_actual.png)`
+> guárdala como `doc/screenshots/estado_actual.png`. Luego inserta:_
+> `![Estado actual del proyecto](doc/screenshots/estado_actual.png)`
 
 ## 📂 Estructura de Directorios del Repositorio
-A partir del Laboratorio 2, el proyecto sigue una arquitectura modular con
-co-localización estricta (cada escena vive junto a su script controlador):
+El proyecto sigue una arquitectura modular con co-localización estricta
+(cada escena vive junto a su script controlador, salvo Configuración y
+Créditos, que desde el Lab 4 ya no requieren script propio):
 
 ```
 src/
-├── core/                     <- Lógica global del sistema
-│   ├── event_bus.gd          <- Autoload "EventBus" (Observer/Singleton)
-│   ├── main_app.tscn         <- Escena principal (orquestador)
+├── core/                       <- Lógica global del sistema
+│   ├── event_bus.gd            <- Autoload "EventBus" (Observer/Singleton)
+│   ├── global_manager.gd       <- Autoload "GlobalManager" (Lab 4)
+│   ├── main_app.tscn           <- Escena principal (orquestador)
 │   └── main_app.gd
 ├── scenes/
-│   ├── menu/                 <- Panel de menú principal
-│   ├── simulation/           <- Panel de simulación (Paso 1)
-│   ├── config/                <- Panel de configuración
-│   └── credits/               <- Panel de créditos
-├── components/                <- Nodos/micro-escenas reutilizables
-│   └── back_button/           <- Botón "Volver" reutilizable (Lab 3)
-└── assets/                    <- Recursos multimedia (audio, UI, texturas)
+│   ├── main/                   <- Panel de menú principal
+│   ├── simulation/             <- Panel de simulación (Paso 1)
+│   ├── config/                 <- Panel de configuración (sin script)
+│   └── credits/                <- Panel de créditos (sin script)
+├── components/                 <- Nodos/micro-escenas reutilizables
+│   └── navigation/
+│       └── button_nav.tscn     <- Botón de navegación reutilizable (Lab 4)
+└── assets/                     <- Recursos multimedia (audio, UI, texturas)
 ```
 
 ## 🧩 Arquitectura de Navegación Desacoplada
 La navegación entre pantallas ya **no** usa llamadas directas y acopladas
 (`get_tree().change_scene_to_file()`). En su lugar, se implementa un
 **Event Bus global (Autoload `EventBus`)** que centraliza la comunicación
-mediante el patrón Observer. Cada panel emite `navigation_requested(ruta)`
-y `MainApp` es el único responsable de instanciar/liberar escenas de forma
-segura. El detalle de esta decisión está documentado en
-[`doc/adr/0001-uso-de-event-bus.md`](doc/adr/0001-uso-de-event-bus.md).
+mediante el patrón Observer. Cada panel emite
+`navigation_requested(target_scene, discard_previous)` y `MainApp` es el
+único responsable de instanciar/liberar escenas de forma segura,
+manteniendo además una pila `navigation_history` que registra la
+secuencia de pantallas visitadas. El detalle de esta decisión está
+documentado en
+[`doc/adr/ADR-001-uso-de-event-bus.md`](doc/adr/ADR-001-uso-de-event-bus.md).
+
+## 🧠 Estado Global Centralizado (GlobalManager)
+Desde el Laboratorio 4, ningún panel calcula ni almacena datos de
+negocio localmente. `GlobalManager` (Autoload) centraliza los precios y
+la selección activa de la simulación en estructuras `Dictionary`,
+escucha las señales `base_selected` e `item_added` del EventBus, y
+notifica el resultado mediante `total_changed`. La interfaz
+(`Step1Base`) solo emite intenciones y escucha ese resultado de forma
+pasiva. Justificación completa en
+[`doc/adr/ADR-003-global-manager-button-nav.md`](doc/adr/ADR-003-global-manager-button-nav.md).
 
 ## 🧩 Componentes Reutilizables
-Desde el Laboratorio 3, la lógica repetida entre paneles se extrae a
-`src/components/`. El primer componente es `back_button/`: un `Button`
-con la variable exportada `target_scene_path`, que emite
-`navigation_requested` al EventBus sin que cada panel necesite declarar
-su propio callback de "volver". Se usa como instancia (`.tscn`) dentro de
-`config_panel`, `credits_panel` y `step_1_base`. La justificación de la
-arquitectura basada en escenas está documentada en
-[`docs/adr/adr_001_escenas.md`](docs/adr/adr_001_escenas.md).
+La lógica repetida entre paneles se extrae a `src/components/`. El
+componente actual es `navigation/button_nav.tscn`: un `Button` con las
+variables exportadas `target_scene` (selector de archivo `.tscn`) y
+`discard_previous` (bandera para indicar si es un botón de "volver").
+Se usa como instancia dentro de `menu_panel`, `config_panel`,
+`credits_panel` y `step_1_base`, sin que esos paneles necesiten declarar
+su propio callback de navegación. La justificación de la arquitectura
+basada en escenas está documentada en
+[`doc/adr/ADR-002-arquitectura-escenas.md`](doc/adr/ADR-002-arquitectura-escenas.md).
 
 ## ⚙️ Tecnologías Utilizadas
 * **Engine:** Godot Engine 4.x (Renderizador: *Compatibility* para portabilidad web)
