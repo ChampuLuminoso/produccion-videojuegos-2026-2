@@ -1,9 +1,9 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene format=3 uid="uid://piblvb4k3fcs"]
 
-[ext_resource type="Script" path="res://src/scenes/simulation/step_1_base.gd" id="1"]
-[ext_resource type="PackedScene" path="res://src/components/back_button/back_button.tscn" id="2"]
+[ext_resource type="Script" uid="uid://cqdwbv2kexavo" path="res://src/scenes/simulation/step_1_base.gd" id="1"]
+[ext_resource type="PackedScene" path="res://src/components/navigation/button_nav.tscn" id="2"]
 
-[node name="Step1Base" type="Control"]
+[node name="Step1Base" type="Control" unique_id=1572323276]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,7 +12,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
 
-[node name="LblTitle" type="Label" parent="."]
+[node name="LblTitle" type="Label" parent="." unique_id=596058463]
 layout_mode = 0
 offset_left = 23.0
 offset_top = 30.0
@@ -21,7 +21,7 @@ offset_bottom = 53.0
 scale = Vector2(1.16, 2.08)
 text = "Pantalla de Simulación Interactiva - Paso 1"
 
-[node name="GridContainer" type="GridContainer" parent="."]
+[node name="GridContainer" type="GridContainer" parent="." unique_id=764113037]
 layout_mode = 0
 offset_left = 38.0
 offset_top = 90.0
@@ -29,30 +29,35 @@ offset_right = 418.0
 offset_bottom = 181.0
 columns = 2
 
-[node name="BtnIngrediente1" type="Button" parent="GridContainer"]
+[node name="BtnIngrediente1" type="Button" parent="GridContainer" unique_id=604014845]
 layout_mode = 2
 text = "+ Seleccionar Base 1"
 
-[node name="BtnIngrediente2" type="Button" parent="GridContainer"]
+[node name="BtnIngrediente2" type="Button" parent="GridContainer" unique_id=965151947]
 layout_mode = 2
 text = "+ Seleccionar Base 2"
 
-[node name="LblStatusLocal" type="Label" parent="."]
-layout_mode = 0
-offset_left = 32.0
-offset_top = 141.0
-offset_right = 377.0
-offset_bottom = 164.0
-scale = Vector2(1.12, 1.28)
-text = "Ninguna opción seleccionada de forma local."
+[node name="BtnExtra" type="Button" parent="GridContainer" unique_id=232154236]
+layout_mode = 2
+text = "+ Agregar Extra de Queso"
 
-[node name="HBoxNavigation" type="HBoxContainer" parent="."]
+[node name="LblStatusLocal" type="Label" parent="." unique_id=633336181]
+layout_mode = 0
+offset_left = 43.0
+offset_top = 164.0
+offset_right = 388.0
+offset_bottom = 187.0
+scale = Vector2(1.12, 1.28)
+text = "Total: $0"
+
+[node name="HBoxNavigation" type="HBoxContainer" parent="." unique_id=1511928889]
 layout_mode = 0
 offset_left = 144.0
 offset_top = 186.0
 offset_right = 268.0
 offset_bottom = 226.0
 
-[node name="BtnVolver" parent="HBoxNavigation" instance=ExtResource("2")]
-layout_mode = 2
-target_scene_path = "res://src/scenes/menu/menu_panel.tscn"
+[node name="BtnVolver" parent="HBoxNavigation" unique_id=423026533 instance=ExtResource("2")]
+text = "Volver al Menú"
+target_scene = "res://src/scenes/main/menu_panel.tscn"
+discard_previous = true

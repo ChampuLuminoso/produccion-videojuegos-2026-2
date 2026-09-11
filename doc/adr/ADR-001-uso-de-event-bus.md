@@ -1,4 +1,4 @@
-# ADR 0001: Uso de un Event Bus (Autoload) para la navegación entre escenas
+# ADR-001: Uso de un Event Bus (Autoload) para la navegación entre escenas
 
 ## Estado
 Aceptado
