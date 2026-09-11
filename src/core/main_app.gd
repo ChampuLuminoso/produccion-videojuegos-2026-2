@@ -1,39 +1,45 @@
 # res://src/core/main_app.gd
 # ---------------------------------------------------------------------------
-# MAIN APP — Orquestador central de navegación desacoplada
+# MAIN APP — Orquestador central de navegación (actualizado en el Lab 4)
 # ---------------------------------------------------------------------------
-# Escena principal del proyecto. Se suscribe de forma asíncrona a la señal
-# global "navigation_requested" del EventBus y gestiona el ciclo de vida
-# (instanciación y liberación de memoria) de los paneles visuales dentro
-# de SceneContainer, evitando fugas de memoria (memory leaks).
+# Además de instanciar/liberar escenas de forma segura (Lab 2), ahora
+# también administra la pila de historial de navegación
+# "navigation_history", genérica para todo el sistema: ninguna escena
+# necesita saber que esta pila existe, solo emiten "navigation_requested"
+# indicando si su navegación es un avance o un regreso.
 # ---------------------------------------------------------------------------
 extends Control
 
-const MENU_SCENE_PATH: String = "res://src/scenes/menu/menu_panel.tscn"
+const MENU_SCENE_PATH: String = "res://src/scenes/main/menu_panel.tscn"
 
 @onready var scene_container: Control = $SceneContainer
 
 var current_scene: Node = null
+var navigation_history: Array[String] = []
 
 func _ready() -> void:
-	print("MainApp iniciado. Suscribiéndose al EventBus...")
 	EventBus.navigation_requested.connect(_on_navigation_requested)
+	_on_navigation_requested(MENU_SCENE_PATH, false)
 
-	# Carga inicial: el menú principal.
-	_on_navigation_requested(MENU_SCENE_PATH)
+func _on_navigation_requested(target_scene: String, discard_previous: bool) -> void:
+	# 1. Actualizar la pila de historial ANTES de instanciar el nuevo panel.
+	if discard_previous:
+		if not navigation_history.is_empty():
+			navigation_history.pop_back()
+	else:
+		navigation_history.append(target_scene)
 
-func _on_navigation_requested(target_scene_path: String) -> void:
-	print("MainApp: navegación solicitada hacia -> ", target_scene_path)
+	print("MainApp: navigation_history -> ", navigation_history)
 
-	# 1. Liberar de forma segura la escena activa previa (si existe).
+	# 2. Liberar de forma segura la escena activa previa (si existe).
 	if current_scene:
 		current_scene.queue_free()
 		current_scene = null
 
-	# 2. Cargar e instanciar la nueva escena solicitada.
-	var new_scene_resource: PackedScene = load(target_scene_path) as PackedScene
+	# 3. Cargar e instanciar la nueva escena solicitada.
+	var new_scene_resource: PackedScene = load(target_scene) as PackedScene
 	if new_scene_resource == null:
-		push_error("MainApp: no fue posible cargar la escena en la ruta: %s" % target_scene_path)
+		push_error("MainApp: no fue posible cargar la escena: %s" % target_scene)
 		return
 
 	var new_scene_instance: Node = new_scene_resource.instantiate()

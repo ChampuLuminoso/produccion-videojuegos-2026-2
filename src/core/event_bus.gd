@@ -1,19 +1,23 @@
 # res://src/core/event_bus.gd
 # ---------------------------------------------------------------------------
-# EVENT BUS (Autoload / Singleton)
+# EVENT BUS (Autoload / Singleton) — Actualizado en el Laboratorio 4
 # ---------------------------------------------------------------------------
-# Canal intermediario global que implementa el patrón Observer para
-# desacoplar por completo las escenas visuales de la lógica de navegación.
-# Ninguna escena conoce a otra directamente: solo emiten y escuchan señales
-# a través de este nodo, registrado como Autoload bajo el identificador
-# "EventBus".
+# Único canal de señales globales del Sprint 1. Ninguna escena conoce a
+# otra directamente ni conoce a GlobalManager: todas se comunican a
+# través de estas señales tipadas.
 # ---------------------------------------------------------------------------
 extends Node
 
-## Se emite cuando cualquier panel solicita navegar hacia otra escena.
-## MainApp es el único suscriptor responsable de instanciar/liberar escenas.
-signal navigation_requested(target_scene_path: String)
+## Navegación entre pantallas. "discard_previous" indica si esta
+## navegación debe retirar la última entrada del historial (típico de un
+## botón de "volver") en vez de apilar una nueva.
+signal navigation_requested(target_scene: String, discard_previous: bool)
 
-## Se emite cuando un panel modifica un parámetro de simulación
-## (por ejemplo, la selección de un ingrediente y su costo asociado).
-signal parameter_changed(param_name: String, value: Variant)
+## El usuario seleccionó una base de simulación (reemplaza la selección anterior).
+signal base_selected(base_name: String)
+
+## El usuario agregó un ítem/accesorio adicional a la simulación.
+signal item_added(item_id: String)
+
+## GlobalManager recalculó el total y notifica el nuevo valor a la GUI.
+signal total_changed(new_total: int)
