@@ -1,4 +1,4 @@
-# ADR 001: Adopción de una arquitectura basada en escenas modulares
+# ADR-002: Adopción de una arquitectura basada en escenas modulares
 
 ## Estado
 Aceptado
