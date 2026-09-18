@@ -50,12 +50,29 @@ offset_bottom = 187.0
 scale = Vector2(1.12, 1.28)
 text = "Total: $0"
 
+[node name="LblZonaActiva" type="Label" parent="."]
+layout_mode = 0
+offset_left = 38.0
+offset_top = 196.0
+offset_right = 300.0
+offset_bottom = 216.0
+text = "Zona activa: ninguna"
+
+[node name="LblTeclas" type="Label" parent="."]
+layout_mode = 0
+offset_left = 38.0
+offset_top = 216.0
+offset_right = 380.0
+offset_bottom = 236.0
+modulate = Color(1, 1, 1, 0.6)
+text = "Teclas: 1 = Base 1 · 2 = Base 2 · 3 = Extra de Queso"
+
 [node name="HBoxNavigation" type="HBoxContainer" parent="." unique_id=1511928889]
 layout_mode = 0
 offset_left = 144.0
-offset_top = 186.0
+offset_top = 246.0
 offset_right = 268.0
-offset_bottom = 226.0
+offset_bottom = 286.0
 
 [node name="BtnVolver" parent="HBoxNavigation" unique_id=423026533 instance=ExtResource("2")]
 text = "Volver al Menú"

@@ -73,6 +73,14 @@ su propio callback de navegación. La justificación de la arquitectura
 basada en escenas está documentada en
 [`doc/adr/ADR-002-arquitectura-escenas.md`](doc/adr/ADR-002-arquitectura-escenas.md).
 
+## 🎮 Mecánicas de Interacción (Lab 5)
+La pantalla de simulación (`Step1Base`) responde a más de un tipo de
+entrada: clic en los botones, y teclas numéricas (1, 2, 3) que disparan
+exactamente los mismos callbacks, sin lógica duplicada. Además, cada
+opción es una zona de interacción: al pasar el mouse sobre ella, un
+`Label` indica cuál está activa bajo el cursor (`mouse_entered` /
+`mouse_exited`).
+
 ## ⚙️ Tecnologías Utilizadas
 * **Engine:** Godot Engine 4.x (Renderizador: *Compatibility* para portabilidad web)
 * **Lenguaje:** GDScript 2.0 (Tipado estricto)
