@@ -19,10 +19,16 @@ offset_top = 40.0
 offset_right = 240.0
 offset_bottom = 200.0
 
-[node name="BtnSimular" parent="VBoxMenu" instance=ExtResource("2")]
+[node name="BtnBuyPanel" parent="VBoxMenu" instance=ExtResource("2")]
 layout_mode = 2
-text = "Iniciar Simulación"
-target_scene = "res://src/scenes/simulation/step_1_base.tscn"
+text = "Iniciar Compra"
+target_scene = "res://src/scenes/buying_process/buy_panel.tscn"
+discard_previous = false
+
+[node name="BtnCoupon" parent="VBoxMenu" instance=ExtResource("2")]
+layout_mode = 2
+text = "Conseguir Cupones"
+target_scene = "res://src/scenes/buying_process/coupon_event.tscn"
 discard_previous = false
 
 [node name="BtnConfig" parent="VBoxMenu" instance=ExtResource("2")]
