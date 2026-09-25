@@ -32,9 +32,18 @@ var base_actual: String = ""
 var items_activos: Array[String] = []
 var total_actual: int = 0
 
+## --- Cupones (Laboratorio 5) ---
+## Ejemplo de estructura de un cupón:
+## { "value": 2000, "minimum_purchase": 10000 }
+## Los cupones se agregan aquí cuando el minijuego de gamificación
+## emite EventBus.coupon_obtained — GlobalManager nunca conoce el
+## minijuego, solo el resultado que publica.
+var coupons: Array[Dictionary] = []
+
 func _ready() -> void:
 	EventBus.base_selected.connect(_on_base_selected)
 	EventBus.item_added.connect(_on_item_added)
+	EventBus.coupon_obtained.connect(_on_coupon_obtained)
 
 func _on_base_selected(base_name: String) -> void:
 	if not precios_base.has(base_name):
@@ -71,3 +80,35 @@ func reiniciar() -> void:
 	items_activos.clear()
 	total_actual = 0
 	EventBus.total_changed.emit(total_actual)
+
+# ---------------------------------------------------------------------------
+# CUPONES (Laboratorio 5) — Reglas de negocio, separadas del cálculo del
+# total: el "qué guardamos" (arriba) y el "qué hacemos con eso" (aquí)
+# son responsabilidades distintas.
+# ---------------------------------------------------------------------------
+
+func _on_coupon_obtained(coupon: Dictionary) -> void:
+	coupons.append(coupon)
+	print("GlobalManager: cupón recibido -> ", coupon)
+
+## Busca, entre los cupones disponibles, el de mayor valor que sí cumpla
+## el monto mínimo de la compra actual. Devuelve un Dictionary vacío si
+## ninguno aplica.
+func get_best_coupon(subtotal: int) -> Dictionary:
+	var best_coupon: Dictionary = {}
+
+	for coupon: Dictionary in coupons:
+		if subtotal >= coupon["minimum_purchase"]:
+			if best_coupon.is_empty():
+				best_coupon = coupon
+			elif coupon["value"] > best_coupon["value"]:
+				best_coupon = coupon
+
+	return best_coupon
+
+## Retira un cupón ya utilizado (se llama al confirmar la compra, nunca
+## antes — mientras el usuario solo está revisando la factura, el cupón
+## sigue disponible).
+func remove_coupon(coupon: Dictionary) -> void:
+	if coupon in coupons:
+		coupons.erase(coupon)

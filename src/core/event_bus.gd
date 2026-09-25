@@ -21,3 +21,9 @@ signal item_added(item_id: String)
 
 ## GlobalManager recalculó el total y notifica el nuevo valor a la GUI.
 signal total_changed(new_total: int)
+
+## Una actividad externa (ej. el minijuego de gamificación) produjo un
+## cupón. El emisor no conoce a la pantalla de compra ni a GlobalManager
+## directamente: solo publica el resultado en el bus. Agregado en el
+## Laboratorio 5 para integrar la gamificación de forma desacoplada.
+signal coupon_obtained(coupon: Dictionary)
