@@ -102,3 +102,43 @@ pantallas mediante el patrón Observer.
 | Dificultades encontradas | Definir la semántica exacta de `discard_previous` en `navigation_history`: inicialmente se dudó si al "volver" también debía apilarse la ruta de destino además de hacer `pop_back()`. Se decidió que no, siguiendo la guía al pie de la letra, para que la pila represente fielmente el camino de avance del usuario sin duplicar entradas. También hubo que decidir cómo demostrar la señal `item_added` sin agregar una funcionalidad ajena al alcance del laboratorio; se resolvió con un único botón adicional de "extra" dentro de la misma pantalla de simulación ya existente. |
 | Decisiones de diseño | Se consolidaron los tres ADR en una sola carpeta `doc/adr/` con nomenclatura unificada (`ADR-001`, `ADR-002`, `ADR-003`), corrigiendo la inconsistencia `doc/` vs `docs/` que había quedado entre el Lab 2 y el Lab 3. Se documentó en `ADR-003` la separación de responsabilidades entre `GlobalManager` (datos y cálculo) y las escenas (solo presentación), y la decisión de reemplazar `BackButton` por `ButtonNav` en vez de mantener ambos componentes. |
 | Próximos pasos | Evaluar si `GlobalManager` necesita persistencia en disco (guardar/cargar configuración) en un laboratorio futuro. Agregar la captura de pantalla real al README. Considerar un componente reutilizable adicional para grupos de botones de selección (patrón `.bind()` repetido en `Step1Base`). |
+
+## Actividad 5 – Interacción y Mecánicas Básicas
+
+| Campo | Detalle |
+|---|---|
+| Actividad | Actividad 5 – Interacción y Mecánicas Básicas |
+| Fecha | 18/09/2026 |
+| Funcionalidades implementadas | Se agregó entrada por teclado en `Step1Base`: las teclas 1, 2 y 3 disparan las mismas acciones que los botones de selección de base y de extra, reutilizando exactamente los mismos callbacks (`_on_base_button_pressed`, `_on_item_button_pressed`) para no duplicar lógica. Se agregó una zona de interacción reactiva: al pasar el mouse sobre cada botón (`mouse_entered`/`mouse_exited`), un nuevo `Label` (`LblZonaActiva`) muestra cuál opción está bajo el cursor. |
+| Dificultades encontradas | Decidir dónde conectar la entrada de teclado sin romper el patrón reactivo del Lab 4: se optó por `_unhandled_key_input()` en el propio `Step1Base`, mapeando teclas a los mismos callbacks que ya usaban los botones, en vez de crear una ruta paralela que duplicara la emisión de señales al EventBus. |
+| Decisiones de diseño | La mecánica principal (seleccionar base/ítem) no cambió: se hizo accesible desde una segunda entrada (teclado) sin tocar `GlobalManager` ni el `EventBus`. La "zona de interacción" se implementó con las señales nativas `mouse_entered`/`mouse_exited` de Godot en vez de `Area2D`/colisiones, ya que el proyecto es una interfaz de `Control`, no un mundo físico — tal como la guía aclara que no todos los proyectos requieren colisiones. |
+| Retroalimentación aplicada del Sprint anterior | Se mantuvo la disciplina de no duplicar callbacks (lección del Lab 3 y 4 con `ButtonNav`): la entrada de teclado reutiliza los mismos métodos que ya usaban los botones en vez de reescribir la lógica de selección. |
+| Próximos pasos | Evaluar máquina de estados para la pantalla de simulación (mencionado como preparación para la siguiente actividad). Agregar retroalimentación sonora al seleccionar una opción. |
+
+## [2026-09-25] - Laboratorio 5: Integración de Gamificación y Sistema de Recompensas
+
+### Actividades Realizadas
+- Reorganización de `src/scenes/simulation/` a `src/scenes/buying_process/`, renombrando `step_1_base` a `buy_panel` para reflejar su rol real en el flujo de compra.
+- Creación de una escena independiente (`coupon_event.tscn`) para la mecánica de obtención de cupones, accesible desde el menú principal.
+- Implementación de un minijuego de recolección con físicas 2D (`gamification/coupon_game.tscn`): jugador (`CharacterBody2D`) controlado por teclado, objetos que caen y rebotan (`RigidBody2D`), suelo y paredes de embudo (`StaticBody2D`), y generación progresiva mediante `Spawner` + `Timer`.
+- Implementación de la comunicación entre la gamificación y el sistema mediante el Event Bus: nueva señal `coupon_obtained`.
+- Actualización de `GlobalManager` para administrar los cupones disponibles (`coupons`, `get_best_coupon()`, `remove_coupon()`).
+- Creación de la pantalla de factura (`purchase_invoice.tscn`) que muestra el subtotal, aplica automáticamente el mejor cupón válido y calcula el total final sin permitir valores negativos.
+- Configuración del Input Map (`move_left`/`move_right`) usando mapeo físico de teclas (A/Flecha izquierda, B/Flecha derecha).
+- Mantenimiento del desacoplamiento entre la mecánica de gamificación y la lógica de compra (ADR-004).
+
+### Desafíos y Soluciones
+- *Desafío:* El código de referencia de la guía asumía una estructura de `GlobalManager` distinta a la que ya tenía el proyecto (cantidades de ingredientes vs. selección única + accesorios booleanos).
+  *Solución:* Se adaptó la lógica de la factura a los campos reales del proyecto (`base_actual`, `items_activos`, `total_actual`) en vez de forzar un cambio de nomenclatura, documentado en ADR-004.
+- *Desafío:* Sin los sprites reales de Kenney todavía descargados, la escena física necesitaba representación visual.
+  *Solución:* Se usaron `ColorRect` como marcadores de posición (jugador verde, comida dorada, suelo y paredes grises), fácilmente reemplazables por `Sprite2D` cuando se agreguen los assets reales.
+- *Desafío:* Incorporar una mecánica de gamificación que pudiera generar recompensas sin establecer dependencias directas con el proceso de compra.
+  *Solución:* Se utilizó el Event Bus para comunicar la obtención del cupón, permitiendo que `GlobalManager` la administre sin que el minijuego conozca la pantalla de compra.
+
+### Retroalimentación aplicada del Sprint anterior
+- Se mantuvo la disciplina de no duplicar lógica: la factura consulta al `GlobalManager` en vez de recalcular el subtotal por su cuenta, igual que ya hacían los paneles reactivos del Lab 4.
+
+### Próximos pasos
+- Descargar y colocar los sprites reales de Kenney Physics Assets, reemplazando los `ColorRect` placeholder.
+- Implementar el Reto 1 de la guía (límite de 3 intentos de participación).
+- Probar el flujo completo de principio a fin: menú → cupón → minijuego → factura → confirmación.
